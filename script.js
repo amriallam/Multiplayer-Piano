@@ -252,8 +252,8 @@ function drawInfo() {
     }
 }
 function octaveChange() {
-    if (+octaveInput.value < 1 || +octaveInput.value > 7)
-        octaveInput.value = octaveInput.value < 1 ? 1 : 7;
+    if (+octaveInput.value < 1 || +octaveInput.value > 6)
+        octaveInput.value = octaveInput.value < 1 ? 1 : 6;
     currentOctave = +octaveInput.value
     for (var key in keyboardNotes) {
         let parentDiv = document.getElementById(keyboardNotes[key].replace(",", ""))
