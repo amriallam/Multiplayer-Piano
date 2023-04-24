@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piano</title>
+    <script src="./audiosynth.js"></script>
+    <script src="./script.js"></script>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./bootstrap.min.css">
+</head>
+
+<body>
+    <div id="controller" class="d-flex justify-content-center gap-3 mt-3">
+
+        <span class="fw-bold fs-4">Keyboard Buttons</span>
+        <label class="switch">
+        <input type="checkbox" checked onchange="toggleInfo(0)">
+        <span class="slider"></span>
+        </label>
+
+        <span class="fw-bold fs-4">Notes</span>
+        <label class="switch">
+        <input type="checkbox" checked onchange="toggleInfo(1)">
+        <span class="slider"></span>
+        </label>
+
+        <span class="fw-bold fs-4">Volume</span>
+        <input type="range" min="0" max="1" value="1" step="0.1" id="volumeRange">
+        <select class="fw-normal fs-6" id="instrumentSelectList">
+            <option class="fw-normal fs-6" value="piano" selected>Piano</option>
+            <option class="fw-normal fs-6" value="organ">organ </option>
+            <option class="fw-normal fs-6" value="acoustic">Acoustic</option>
+            <option class="fw-normal fs-6" value="edm">Edm</option>
+        </select>
+        <input class="fw-normal fs-6" type="number" min="1" max="7" value="3" onchange="octaveChange()" id="octaveInput">
+    </div>
+    <div class="mt-5" id="keyboardDiv"></div>
+</body>
+
+</html>

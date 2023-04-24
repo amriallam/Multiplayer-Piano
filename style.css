@@ -1,0 +1,110 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-size: 0.75rem;
+}
+
+.key {
+  position: absolute;
+  font-family: Helvetica;
+  font-weight: 100;
+  font-size: 12px;
+  border: 1px solid rgba(32, 32, 32, 0.2);
+  border-radius: 0px 0px 5px 5px;
+  cursor: pointer;
+  box-shadow: 0px 5px 1px rgba(32, 32, 32, 0.2);
+}
+
+.key:hover {
+  background-color: #e2e8e4;
+}
+
+.black {
+  background-color: rgb(32, 32, 32);
+  color: #ffffff;
+  z-index: 1;
+  text-shadow: 0px -1px 1px #FF0000;
+}
+
+.white {
+  background-color: #ffffff;
+  color: #4824ff;
+  z-index: 0;
+  text-shadow: 0px 1px 1px #08E8F5;
+}
+
+.whiteKeyboard {
+  position: relative;
+  top: 85%;
+}
+
+.blackKeyboard {
+  position: relative;
+  top: 70%;
+}
+
+.whiteNote {
+  position: relative;
+  top: 60%;
+}
+
+.blackNote {
+  position: relative;
+  top: 20%;
+}
+
+span {
+  transition: all 0.2s ease-in-out;
+}
+
+/* https://uiverse.io/aasisodiya/sour-horse-29 */
+
+/* The switch - the box around the slider */
+.switch {
+  font-size: 1rem;
+  position: relative;
+  display: inline-block;
+  width: 3em;
+  height: 1.8em;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #eee;
+  transition: 0.4s;
+  border-radius: 0.5em;
+  box-shadow: 0 0.2em #dfd9d9;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 1.5em;
+  width: 1.4em;
+  border-radius: 0.3em;
+  left: 0.3em;
+  bottom: 0.7em;
+  background-color: lightsalmon;
+  transition: 0.4s;
+  box-shadow: 0 0.4em #bcb4b4;
+}
+
+.slider:hover::before {
+  box-shadow: 0 0.2em #bcb4b4;
+  bottom: 0.5em;
+}
+
+input:checked+.slider:before {
+  transform: translateX(2em);
+  background: lightgreen;
+}
