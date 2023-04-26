@@ -190,9 +190,7 @@ addEventListener("load", () => {
     })
     addEventListener("keyup", (event) => {
         if (!keyboardNotes.hasOwnProperty(event.keyCode)) return
-        if (touchedKeys.findIndex(e => e == event.keyCode) == -1) return
         touchedKeys.splice(touchedKeys.findIndex(e => e = event.keyCode), 1)
-        console.table(touchedKeys)
         pianoEvent(event, "-", "keyup")
     })
 })
