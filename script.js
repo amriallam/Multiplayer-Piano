@@ -157,7 +157,6 @@ const keyboardMapping = {
     "219": "{",
     "221": "}"
 }
-let touchedKeys = [];
 let currentOctave = 3;
 let instrument = Synth.createInstrument("piano");
 addEventListener("load", () => {
@@ -167,7 +166,7 @@ addEventListener("load", () => {
     instrumentSelectList.addEventListener("change", () => instrument = Synth.createInstrument(instrumentSelectList.value))
     addEventListener("keydown", (event) => {
         if (!keyboardNotes.hasOwnProperty(event.keyCode)) return
-        if (touchedKeys.findIndex(e => e == event.keyCode) != -1) return;
+        if (document.getElementById(keyboardNotes[event.keyCode].replace(",", "")).classList.contains("pressed")) return
         let pressedkey = keyboardNotes[event.keyCode].split(",");
         let pressedOctave;
         switch (pressedkey[1]) {
@@ -185,13 +184,11 @@ addEventListener("load", () => {
             }
         }
         instrument.play(pressedkey[0], pressedOctave, 2);
-        touchedKeys.push(event.keyCode)
-        pianoEvent(event, "+", "keydown")
+        pianoEvent(event, "keydown")
     })
     addEventListener("keyup", (event) => {
         if (!keyboardNotes.hasOwnProperty(event.keyCode)) return
-        touchedKeys.splice(touchedKeys.findIndex(e => e = event.keyCode), 1)
-        pianoEvent(event, "-", "keyup")
+        pianoEvent(event, "keyup")
     })
 })
 function drawKeys() {
@@ -273,19 +270,11 @@ function octaveChange() {
         }
     }
 }
-function pianoEvent(event, sign, currentEvent) {
+function pianoEvent(event, currentEvent) {
     let keyDiv = document.getElementById(keyboardNotes[event.keyCode].replace(",", ""))
-    switch (currentEvent) {
-        case "keyup": {
-            keyDiv.style.background = keyDiv.id.includes("#") ? "rgb(32, 32, 32)" : "#ffffff"
-            break;
-        }
-        case "keydown": {
-            keyDiv.style.background = keyDiv.id.includes("#") ? "rgb(120, 120, 120)" : "rgb(215, 214, 214)"
-            break;
-        }
-    }
-    keyDiv.style.marginTop = +keyDiv.style.marginTop.split("px")[0] + eval(sign + 5) + "px";
+    if (currentEvent == "keyup") keyDiv.style.background = keyDiv.id.includes("#") ? "rgb(32, 32, 32)" : "#ffffff"
+    else keyDiv.style.background = keyDiv.id.includes("#") ? "rgb(120, 120, 120)" : "rgb(215, 214, 214)"
+    keyDiv.classList.toggle("pressed")
 }
 function toggleInfo(child) {
     const pianoKeysDiv = document.getElementsByClassName("key");
