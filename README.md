@@ -1,3 +1,3 @@
 # Piano
-<strong>Upcoming Features</strong>
+<strong>Upcoming Features</strong> <br>
 Chat Window
