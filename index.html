@@ -6,43 +6,100 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Piano</title>
-    <script src="./audiosynth.js"></script>
-    <script src="./script.js"></script>
-    <link rel="stylesheet" href="./style.css">
-    <link rel="stylesheet" href="./bootstrap.min.css">
+    <script src="./js/audiosynth.js"></script>
+    <script src="./js/socket.io.js"></script>
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/script.js"></script>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
 </head>
 
 <body>
-    <div id="controller" class="d-flex justify-content-center gap-3 mt-3">
-
-        <span class="fw-bold fs-4">Keyboard Buttons</span>
-        <label class="switch">
-        <input type="checkbox" checked onchange="toggleInfo(0)">
-        <span class="slider"></span>
-        </label>
-
-        <span class="fw-bold fs-4">Notes</span>
-        <label class="switch">
-        <input type="checkbox" checked onchange="toggleInfo(1)">
-        <span class="slider"></span>
-        </label>
-
-        <span class="fw-bold fs-4">Volume</span>
-        <input type="range" min="0" max="1" value="1" step="0.1" id="volumeRange">
-
-        <span class="fw-bold fs-4">Instrument</span>
-        <select class="fw-normal fs-6" id="instrumentSelectList">
-            <option class="fw-normal fs-6" value="piano" selected>Piano</option>
-            <option class="fw-normal fs-6" value="organ">organ </option>
-            <option class="fw-normal fs-6" value="acoustic">Acoustic</option>
-            <option class="fw-normal fs-6" value="edm">Edm</option>
-        </select>
-
-        <span class="fw-bold fs-4">Octave</span>
-        <input class="fw-normal fs-6" type="number" min="1" max="6" value="3" onchange="octaveChange()" id="octaveInput">
+    <div id="Home" class="d-flex gap-5 justify-content-center
+            align-items-center">
+        <div id="singleplayer" class="bg-primary flex-column centerDiv gap-2
+                py-4 px-5 rounded-5">
+            <img src="./assets/singleplayer.png" width="128px" alt="Single
+                    Player">
+            <p class="fs-2 text-light">Single Player</p>
+        </div>
+        <div id="multiplayer" class="bg-danger flex-column centerDiv gap-2
+                py-4 px-5 rounded-5">
+            <img src="./assets/multiplayer.png" width="128px" alt="Multiplayer">
+            <p class="fs-2 text-light">Multiplayer</span>
+        </div>
     </div>
-    <div class="wrapper">
-        <div class="mt-5" id="keyboardDiv"></div>
+    <div id="multiplayerSection" class="d-none d-flex flex-column gap-3">
+        <section class="d-flex align-items-center justify-content-center">
+            <div id="leftSection" class="col-6 d-flex flex-column align-items-end me-4 gap-2">
+                <div class="col-12 col-lg-6">
+                    <input type="text" class="form-control text-center" id="Nickname" placeholder="Nickname" />
+                </div>
+                <button class="btn btn-warning col-12 col-lg-6 p-2 rounded-2" id="createButton">Create</button>
+            </div>
+            <div id="rightSection" class="col-6 d-flex flex-column align-items-start ms-4 gap-2">
+                <div class="col-12 col-lg-6">
+                    <input type="text" class="form-control text-center" id="roomId" placeholder="Enter Room ID" />
+                </div>
+                <p class="alert-light px-2 rounded-1 d-none" id="roomWarning">Enter a valid room id</p>
+                <p class="alert-light px-2 rounded-1 d-none" id="roomIdWarning">Room doesn't exist</p>
+                <button class="btn btn-primary col-12 col-lg-6 p-2 rounded-2" id="joinButton">Join</button>
+            </div>
+        </section>
+        <button class="btn btn-danger mx-auto col-4 rounded-2" id="backButton">Back</button>
+    </div>
+    <div id="pianoDisplay" class="d-none">
+        <div class="container text-end"><button id="homeButton" class="btn btn-primary col-1 text-light fs-2">←</button>
+        </div>
+        <div id="Header"></div>
+        <div id="controller" class="d-flex justify-content-center gap-3 mt-3">
+
+            <span class="fw-bold fs-4">Notes</span>
+            <label class="switch">
+                <input type="checkbox" checked onchange="toggleInfo(1)">
+                <span class="slider"></span>
+            </label>
+
+            <span class="fw-bold fs-4">Keyboard Buttons</span>
+            <label class="switch">
+                <input type="checkbox" checked onchange="toggleInfo(0)">
+                <span class="slider"></span>
+            </label>
+
+            <span class="fw-bold fs-4">Volume</span>
+            <input type="range" min="0" max="1" value="1" step="0.1" onchange="volumeChange(value)" id="volumeRange">
+
+            <span class="fw-bold fs-4">Instrument</span>
+            <select class="fw-normal fs-6" id="instrumentSelectList" onchange="instrumentChange(value)">
+                <option class="fw-normal fs-6" value="piano" selected>Piano</option>
+                <option class="fw-normal fs-6" value="organ">organ</option>
+                <option class="fw-normal fs-6" value="acoustic">Acoustic</option>
+                <option class="fw-normal fs-6" value="edm">Edm</option>
+            </select>
+
+            <span class="fw-bold fs-4">Octave</span>
+            <input class="fw-normal fs-6" type="number" min="1" max="6" value="3" onchange="octaveChange(value)"
+                id="octaveInput">
+        </div>
+        <div class="wrapper">
+            <div class="mt-5" id="keyboardDiv"></div>
+        </div>
+    </div>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="successToastDiv" class="toast bg-success-subtle" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto" id="successToastHeader"></strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="successToastBody"></div>
+        </div>
+        <div id="errorToastDiv" class="toast bg-danger-subtle" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto" id="errorToastHeader"></strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="errorToastBody"></div>
+        </div>
     </div>
 </body>
 

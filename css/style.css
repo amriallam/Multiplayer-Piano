@@ -1,6 +1,9 @@
 * {
   margin: 0;
   font-size: 0.75rem;
+  font-weight: bold;
+  user-select: none;
+  font-family: Helvetica;
 }
 
 body {
@@ -8,11 +11,17 @@ body {
   overflow: hidden;
 }
 
+/* .key { */
+  /* color: #2698d9;
+  border: 1px solid rgba(32, 32, 32, 0.2);
+  border-radius: 0px 0px 5px 5px;
+  cursor: pointer;
+  box-shadow: 0px 5px 1px rgba(32, 32, 32, 0.2);
+} */
+
 .key {
   position: absolute;
-  font-family: Helvetica;
-  font-weight: 100;
-  font-size: 12px;
+  color: #2698d9;
   border: 1px solid rgba(32, 32, 32, 0.2);
   border-radius: 0px 0px 5px 5px;
   cursor: pointer;
@@ -21,53 +30,76 @@ body {
 
 .wrapper {
   position: relative;
-  left: 20%;
-}
-
-.key:hover {
-  background-color: #e2e8e4;
+  left: 20.5%;
 }
 
 .black {
   background-color: rgb(32, 32, 32);
-  color: #ffffff;
   z-index: 1;
-  text-shadow: 0px -1px 1px #FF0000;
-}
-
-.white {
-  background-color: #ffffff;
-  color: #4824ff;
-  z-index: 0;
-  text-shadow: 0px 1px 1px #08E8F5;
-}
-
-.whiteKeyboard {
-  position: relative;
-  top: 85%;
 }
 
 .blackKeyboard {
-  position: relative;
-  top: 70%;
-}
-
-.whiteNote {
+  padding: 5px 8px;
   position: relative;
   top: 60%;
 }
 
 .blackNote {
   position: relative;
-  top: 20%;
+  top: 10%;
 }
 
-span {
+.white {
+  background-color: #ffffff;
+  z-index: 0;
+}
+
+.whiteKeyboard {
+  padding: 5px 10px;
+  position: relative;
+  top: 80%;
+}
+
+.whiteNote {
+  position: relative;
+  top: 55%;
+}
+
+.keyboardStyleButton {
+  background-color: #f7f5f5;
+  box-shadow: 0 0.3em #dfd9d9;
+  border-radius: 3px;
+  text-align: center;
+}
+
+#keyboardDiv {
+  display: flex;
+  justify-content: center;
+}
+
+.centerDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#singleplayer:hover,
+#multiplayer:hover {
+  filter: brightness(90%);
+}
+
+span {  
   transition: all 0.2s ease-in-out;
 }
 
-.pressed {
-  margin-top: 5px;
+.mainPlayer {
+  background-color: #cdf1ff;
+  margin-top: 0.6rem;
+}
+
+.secondPlayer{
+  background-color: #ffc9c9;
+  margin-top: 0.6rem;
 }
 
 /* https://uiverse.io/aasisodiya/sour-horse-29 */
@@ -77,7 +109,7 @@ span {
   font-size: 1rem;
   position: relative;
   display: inline-block;
-  width: 3em;
+  width: 3.4em;
   height: 1.8em;
 }
 
