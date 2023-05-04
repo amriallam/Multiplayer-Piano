@@ -205,7 +205,7 @@ addEventListener("load", () => {
         localStorage.setItem("roomId", socket.id)
         showHide(pianoDisplay, multiplayerSection)
         chatDiv.classList.remove("d-none");
-        roomIdDiv.innerText = `<div class="text-center"><span class="text-center">You hosted room: ${socket.id}</span><button onclick="copyRoomId()" class="mx-2 py-0 px-1 btn btn-primary shadow-none">Copy</button></div>`
+        roomIdDiv.innerHTML = `<div class="text-center"><span class="text-center">You hosted room: ${socket.id}</span><button onclick="copyRoomId()" class="mx-2 py-0 px-1 btn btn-primary shadow-none">Copy</button></div>`
         startPiano()
         multiplayerFlag = true;
     })
@@ -217,7 +217,7 @@ socket.on("RoomResult", (result) => {
         localStorage.setItem("roomId", roomId.value.trim())
         socket.emit("joinMe", roomId.value.trim(), sessionStorage.getItem("nickname"));
         startPiano();
-        roomIdDiv.innerText = `<div class="text-center"><span class="text-center">You joined room: ${roomId.value.trim()}</span><button onclick="copyRoomId()" class="mx-2 py-0 px-1 btn btn-primary shadow-none">Copy</button></div>`
+        roomIdDiv.innerHTML = `<div class="text-center"><span class="text-center">You joined room: ${roomId.value.trim()}</span><button onclick="copyRoomId()" class="mx-2 py-0 px-1 btn btn-primary shadow-none">Copy</button></div>`
         multiplayerFlag = true;
         chatDiv.classList.add("d-none");
         restrictConfigurations();
