@@ -1,4 +1,4 @@
-let socket = io("http://localhost:3000");
+let socket = io("http://localhost:3000",{autoConnect: false});
 const keyboardNotes = {
 
     /* 2 */
@@ -165,13 +165,21 @@ let multiplayerFlag = false;
 // buttons event listners
 addEventListener("load", () => {
     singleplayer.addEventListener("click", () => {
-        socket.disconnect();
         showHide(pianoDisplay, Home)
         startPiano()
     })
     multiplayer.addEventListener("click", () =>{
-        if(socket.connected) showHide(multiplayerSection, Home)
-        else showToast(0,"Connection Issue","Failed to connect to server")
+        socket.connect();
+        loadingDiv.classList.remove("opacity-0")
+        socket.on("connect",()=>{
+            loadingDiv.classList.add("opacity-0")
+            showHide(multiplayerSection, Home)
+        });
+        socket.on("connect_error",()=>{
+            loadingDiv.classList.add("opacity-0")
+            showToast(0,"Connection Issue","Failed to connect to server")
+            socket.disconnect();    
+        }); 
     })
     joinButton.addEventListener("click", () => {
         if (validateRoomInput()) {
@@ -182,11 +190,11 @@ addEventListener("load", () => {
             roomIdWarning.classList.add("d-none");
     });
     homeButton.addEventListener("click", () => {
+        chatDiv.classList.add("d-none");
         resetPage();
         showHide(Home,pianoDisplay)
     });
     backButton.addEventListener("click", () => {
-        // socket.connect();
         roomId.value = "";
         showHide(Home, multiplayerSection);
     });
@@ -194,7 +202,8 @@ addEventListener("load", () => {
         // localStorage.setItem("nickname", Nickname.value.trim())
         localStorage.setItem("roomId", socket.id)
         showHide(pianoDisplay, multiplayerSection)
-        Header.innerHTML = `<div class="text-center"><span class="text-center">You hosted room: ${socket.id}</span><button onclick="copyRoomId()" class="mx-2 py-0 px-1 btn btn-primary shadow-none">Copy</button></div>`
+        chatDiv.classList.remove("d-none");
+        roomIdDiv.innerText = `<div class="text-center"><span class="text-center">You hosted room: ${socket.id}</span><button onclick="copyRoomId()" class="mx-2 py-0 px-1 btn btn-primary shadow-none">Copy</button></div>`
         startPiano()
         multiplayerFlag = true;
     })
@@ -205,14 +214,18 @@ socket.on("RoomResult", (result) => {
     if (result) {
         localStorage.setItem("roomId", roomId.value.trim())
         socket.emit("joinMe", roomId.value.trim(), sessionStorage.getItem("nickname"));
-        showHide(pianoDisplay, multiplayerSection);
         startPiano();
-        Header.innerHTML = `<div class="text-center"><span class="text-center">You joined room: ${roomId.value.trim()}</span><button onclick="copyRoomId()" class="mx-2 py-0 px-1 btn btn-primary shadow-none">Copy</button></div>`
+        roomIdDiv.innerText = `<div class="text-center"><span class="text-center">You joined room: ${roomId.value.trim()}</span><button onclick="copyRoomId()" class="mx-2 py-0 px-1 btn btn-primary shadow-none">Copy</button></div>`
         multiplayerFlag = true;
+        chatDiv.classList.add("d-none");
         restrictConfigurations();
+        showHide(pianoDisplay, multiplayerSection);
     } else
         roomIdWarning.classList.remove("d-none");
 });
+socket.on('connection-success', success => {
+    alert('Connection');
+})
 socket.on("keyDownTrigger", (keyCode) => playNote(keyCode,true))
 socket.on("keyUpTrigger", (keyCode) => releaseNote(keyCode,true))
 socket.on("octaveChangeTrigger", (newValue) => {
@@ -238,10 +251,9 @@ function startPiano() {
     addEventListener("keyup", releaseNoteOnKeyUp)
 }
 function resetPage(){
-    keyboardDiv.innerHTML="";
+    keyboardDiv.innerText="";
     removeEventListener("keydown", playNoteOnKeyDown)
     removeEventListener("keyup", releaseNoteOnKeyUp)
-    socket.connect();
 }
 function playNote(keyCode,remoteNote=false) {
     if (!keyboardNotes.hasOwnProperty(keyCode)) return
@@ -273,10 +285,10 @@ function releaseNote(keyCode,remoteNote=false) {
     if (!pressedKeyDiv.classList.contains("pressed")) return
     pianoEvent(keyCode,remoteNote)
     if (multiplayerFlag) socket.emit("keyUpRemote", keyCode, localStorage.getItem("roomId"))
-}
+} 
 function drawKeys() {
     let iWhite = 0;
-    var whiteWidth = 4.5;
+    const whiteWidth = 4.5;
     for (var i = 0; i <= 2; i++) {
         for (var note in new AudioSynth()._notes) {
             var thisKey = document.createElement('div');
@@ -284,15 +296,14 @@ function drawKeys() {
                 thisKey.className = 'black key d-flex flex-column align-items-center';
                 thisKey.style.width = (whiteWidth / 1.6) + 'rem';
                 thisKey.style.height = (whiteWidth * 2) + 'rem';
-                thisKey.style.left = (whiteWidth * (iWhite - 1)) + (whiteWidth * 0.70) + 'rem';
+                thisKey.id = `${note}${i + 1}`;
             } else {
                 thisKey.className = 'white key d-flex flex-column align-items-center';
                 thisKey.style.width = whiteWidth + 'rem';
                 thisKey.style.height = (whiteWidth * 4) + 'rem';
-                thisKey.style.left = whiteWidth * iWhite + 'rem';
+                thisKey.id = `${note}${i + 1}`;
                 iWhite++;
             }
-            thisKey.id = `${note}${i + 1}`;
             keyboardDiv.appendChild(thisKey);
         }
     }
@@ -303,7 +314,7 @@ function drawInfo() {
 
         // Keyboard Buttons
         let span1 = document.createElement("span");
-        span1.innerHTML = keyboardMapping[key];
+        span1.innerText = keyboardMapping[key];
         span1.className = keyboardNotes[key].includes("#") ? "blackKeyboard keyboardStyleButton" : "whiteKeyboard keyboardStyleButton"
 
         // Key Note
@@ -311,15 +322,15 @@ function drawInfo() {
         let pressedkey = keyboardNotes[key].split(",")
         switch (pressedkey[1]) {
             case "1": {
-                span2.innerHTML = pressedkey[0] + currentOctave;
+                span2.innerText = pressedkey[0] + currentOctave;
                 break;
             }
             case "2": {
-                span2.innerHTML = pressedkey[0] + (currentOctave + 1);
+                span2.innerText = pressedkey[0] + (currentOctave + 1);
                 break;
             }
             case "3": {
-                span2.innerHTML = pressedkey[0] + (currentOctave + 2);
+                span2.innerText = pressedkey[0] + (currentOctave + 2);
                 break;
             }
         }
@@ -340,15 +351,15 @@ function octaveChange(newValue) {
         let pressedkey = keyboardNotes[key].split(",")
         switch (pressedkey[1]) {
             case "1": {
-                span.innerHTML = pressedkey[0] + eval(currentOctave);
+                span.innerText = pressedkey[0] + eval(currentOctave);
                 break;
             }
             case "2": {
-                span.innerHTML = pressedkey[0] + eval(currentOctave + 1);
+                span.innerText = pressedkey[0] + eval(currentOctave + 1);
                 break;
             }
             case "3": {
-                span.innerHTML = pressedkey[0] + eval(currentOctave + 2);
+                span.innerText = pressedkey[0] + eval(currentOctave + 2);
                 break;
             }
         }
@@ -405,4 +416,14 @@ function showToast(status,header,body){
     } 
     const toast = (status)? bootstrap.Toast.getOrCreateInstance(successToastDiv):bootstrap.Toast.getOrCreateInstance(errorToastDiv)
     toast.show();
+}
+function toggleChatWindow(){
+    chatWindow.classList.toggle('d-none');
+    if(chatWindow.classList.contains("d-none"))
+    {
+        if(+notificationCount.innerText>0) 
+            notificationCount.classList.remove("d-none")
+        else 
+            notificationCount.classList.add("d-none")
+    }
 }
