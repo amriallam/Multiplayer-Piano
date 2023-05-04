@@ -165,6 +165,8 @@ let multiplayerFlag = false;
 // buttons event listners
 addEventListener("load", () => {
     singleplayer.addEventListener("click", () => {
+        socket.disconnect();
+        loadingDiv.classList.add("opacity-0");
         showHide(pianoDisplay, Home)
         startPiano()
     })

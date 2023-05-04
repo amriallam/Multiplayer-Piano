@@ -1,6 +1,6 @@
 * {
   margin: 0;
-  font-size: 0.65rem;
+  font-size: 0.85rem;
   font-weight: bold;
   user-select: none;
   font-family: Helvetica;
@@ -12,8 +12,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* padding-top: 30vh; */
-  overflow: hidden;
 }
 
 /* .key { */
