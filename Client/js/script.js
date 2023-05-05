@@ -1,4 +1,4 @@
-let socket = io("http://localhost:3000", { autoConnect: false });
+let socket = io(`http://${serverIp}:${serverport}`, { autoConnect: false });
 const keyboardNotes = {
 
     /* 2 */
@@ -192,17 +192,19 @@ addEventListener("load", () => {
             roomIdWarning.classList.add("d-none");
     });
     homeButton.addEventListener("click", () => {
+        if (socket.connected) socket.disconnect();
         chatDiv.classList.add("d-none");
         resetPage();
         showHide(Home, pianoDisplay)
     });
     backButton.addEventListener("click", () => {
+        if (socket.connected) socket.disconnect();
         roomId.value = "";
         showHide(Home, multiplayerSection);
     });
     createButton.addEventListener("click", () => {
-        // localStorage.setItem("nickname", Nickname.value.trim())
-        localStorage.setItem("roomId", socket.id)
+        sessionStorage.setItem("nickname", Nickname.value.trim())
+        sessionStorage.setItem("roomId", socket.id)
         showHide(pianoDisplay, multiplayerSection)
         chatDiv.classList.remove("d-none");
         roomIdDiv.innerHTML = `<div class="text-center"><span class="text-center">You hosted room: ${socket.id}</span><button onclick="copyRoomId()" class="mx-2 py-0 px-1 btn btn-primary shadow-none">Copy</button></div>`
@@ -214,7 +216,7 @@ addEventListener("load", () => {
 // socket.io event listners
 socket.on("RoomResult", (result) => {
     if (result) {
-        localStorage.setItem("roomId", roomId.value.trim())
+        sessionStorage.setItem("roomId", roomId.value.trim())
         socket.emit("joinMe", roomId.value.trim(), sessionStorage.getItem("nickname"));
         startPiano();
         roomIdDiv.innerHTML = `<div class="text-center"><span class="text-center">You joined room: ${roomId.value.trim()}</span><button onclick="copyRoomId()" class="mx-2 py-0 px-1 btn btn-primary shadow-none">Copy</button></div>`
@@ -279,14 +281,14 @@ function playNote(keyCode, remoteNote = false) {
     }
     instrument.play(pressedkey[0], pressedOctave, 2);
     pianoEvent(keyCode, remoteNote)
-    if (multiplayerFlag && !remoteNote) socket.emit("keyDownRemote", keyCode, localStorage.getItem("roomId"))
+    if (multiplayerFlag && !remoteNote) socket.emit("keyDownRemote", keyCode, sessionStorage.getItem("roomId"))
 }
 function releaseNote(keyCode, remoteNote = false) {
     if (!keyboardNotes.hasOwnProperty(keyCode)) return
     let pressedKeyDiv = document.getElementById(keyboardNotes[keyCode].replace(",", ""))
     if (!pressedKeyDiv.classList.contains("pressed")) return
     pianoEvent(keyCode, remoteNote)
-    if (multiplayerFlag) socket.emit("keyUpRemote", keyCode, localStorage.getItem("roomId"))
+    if (multiplayerFlag && !remoteNote) socket.emit("keyUpRemote", keyCode, sessionStorage.getItem("roomId"))
 }
 function drawKeys() {
     let iWhite = 0;
@@ -366,7 +368,7 @@ function octaveChange(newValue) {
             }
         }
     }
-    socket.emit("octaveChange", currentOctave, localStorage.getItem("roomId"))
+    socket.emit("octaveChange", currentOctave, sessionStorage.getItem("roomId"))
 }
 function pianoEvent(keyCode, remoteNote) {
     let keyDiv = document.getElementById(keyboardNotes[keyCode].replace(",", ""))
@@ -398,7 +400,7 @@ function instrumentChange(newInstrument) {
     if (instrument.name == newInstrument) return
     instrument = Synth.createInstrument(newInstrument)
     if (multiplayerFlag)
-        socket.emit("instrumentChange", newInstrument, localStorage.getItem("roomId"));
+        socket.emit("instrumentChange", newInstrument, sessionStorage.getItem("roomId"));
 }
 function volumeChange(newVolume) {
     Synth.setVolume(newVolume)
