@@ -1,4 +1,4 @@
-let socket = io("http://localhost:3000",{autoConnect: false});
+let socket = io("http://localhost:3000", { autoConnect: false });
 const keyboardNotes = {
 
     /* 2 */
@@ -170,18 +170,18 @@ addEventListener("load", () => {
         showHide(pianoDisplay, Home)
         startPiano()
     })
-    multiplayer.addEventListener("click", () =>{
+    multiplayer.addEventListener("click", () => {
         socket.connect();
         loadingDiv.classList.remove("opacity-0")
-        socket.on("connect",()=>{
+        socket.on("connect", () => {
             loadingDiv.classList.add("opacity-0")
             showHide(multiplayerSection, Home)
         });
-        socket.on("connect_error",()=>{
+        socket.on("connect_error", () => {
             loadingDiv.classList.add("opacity-0")
-            showToast(0,"Connection Issue","Failed to connect to server")
-            socket.disconnect();    
-        }); 
+            showToast(0, "Connection Issue", "Failed to connect to server")
+            socket.disconnect();
+        });
     })
     joinButton.addEventListener("click", () => {
         if (validateRoomInput()) {
@@ -194,7 +194,7 @@ addEventListener("load", () => {
     homeButton.addEventListener("click", () => {
         chatDiv.classList.add("d-none");
         resetPage();
-        showHide(Home,pianoDisplay)
+        showHide(Home, pianoDisplay)
     });
     backButton.addEventListener("click", () => {
         roomId.value = "";
@@ -228,8 +228,8 @@ socket.on("RoomResult", (result) => {
 socket.on('connection-success', success => {
     alert('Connection');
 })
-socket.on("keyDownTrigger", (keyCode) => playNote(keyCode,true))
-socket.on("keyUpTrigger", (keyCode) => releaseNote(keyCode,true))
+socket.on("keyDownTrigger", (keyCode) => playNote(keyCode, true))
+socket.on("keyUpTrigger", (keyCode) => releaseNote(keyCode, true))
 socket.on("octaveChangeTrigger", (newValue) => {
     octaveChange(newValue);
     octaveInput.value = newValue
@@ -246,20 +246,20 @@ function playNoteOnKeyDown(event) {
 function releaseNoteOnKeyUp(event) {
     releaseNote(event.keyCode);
 }
-function startPiano() { 
+function startPiano() {
     drawKeys();
     drawInfo();
     addEventListener("keydown", playNoteOnKeyDown)
     addEventListener("keyup", releaseNoteOnKeyUp)
 }
-function resetPage(){
-    keyboardDiv.innerText="";
+function resetPage() {
+    keyboardDiv.innerText = "";
     removeEventListener("keydown", playNoteOnKeyDown)
     removeEventListener("keyup", releaseNoteOnKeyUp)
 }
-function playNote(keyCode,remoteNote=false) {
+function playNote(keyCode, remoteNote = false) {
     if (!keyboardNotes.hasOwnProperty(keyCode)) return
-    let pressedKeyDiv=document.getElementById(keyboardNotes[keyCode].replace(",", ""))
+    let pressedKeyDiv = document.getElementById(keyboardNotes[keyCode].replace(",", ""))
     if (pressedKeyDiv.classList.contains("pressed")) return
     let pressedkey = keyboardNotes[keyCode].split(",");
     let pressedOctave;
@@ -278,16 +278,16 @@ function playNote(keyCode,remoteNote=false) {
         }
     }
     instrument.play(pressedkey[0], pressedOctave, 2);
-    pianoEvent(keyCode,remoteNote)
-    if (multiplayerFlag) socket.emit("keyDownRemote", keyCode, localStorage.getItem("roomId"))
+    pianoEvent(keyCode, remoteNote)
+    if (multiplayerFlag && !remoteNote) socket.emit("keyDownRemote", keyCode, localStorage.getItem("roomId"))
 }
-function releaseNote(keyCode,remoteNote=false) {
+function releaseNote(keyCode, remoteNote = false) {
     if (!keyboardNotes.hasOwnProperty(keyCode)) return
-    let pressedKeyDiv=document.getElementById(keyboardNotes[keyCode].replace(",", ""))
+    let pressedKeyDiv = document.getElementById(keyboardNotes[keyCode].replace(",", ""))
     if (!pressedKeyDiv.classList.contains("pressed")) return
-    pianoEvent(keyCode,remoteNote)
+    pianoEvent(keyCode, remoteNote)
     if (multiplayerFlag) socket.emit("keyUpRemote", keyCode, localStorage.getItem("roomId"))
-} 
+}
 function drawKeys() {
     let iWhite = 0;
     const whiteWidth = 4.5;
@@ -343,7 +343,7 @@ function drawInfo() {
     }
 }
 function octaveChange(newValue) {
-    if(currentOctave== +newValue)return 
+    if (currentOctave == +newValue) return
     if (+newValue < 1 || +newValue > 6)
         newValue = newValue < 1 ? 1 : 6;
     currentOctave = +newValue
@@ -368,10 +368,10 @@ function octaveChange(newValue) {
     }
     socket.emit("octaveChange", currentOctave, localStorage.getItem("roomId"))
 }
-function pianoEvent(keyCode,remoteNote) {
+function pianoEvent(keyCode, remoteNote) {
     let keyDiv = document.getElementById(keyboardNotes[keyCode].replace(",", ""))
     keyDiv.classList.toggle("pressed")
-    if(remoteNote) keyDiv.classList.toggle("secondPlayer")
+    if (remoteNote) keyDiv.classList.toggle("secondPlayer")
     else keyDiv.classList.toggle("mainPlayer")
 }
 function toggleInfo(child) {
@@ -402,30 +402,29 @@ function instrumentChange(newInstrument) {
 }
 function volumeChange(newVolume) {
     Synth.setVolume(newVolume)
-} 
-function restrictConfigurations(){
-    instrumentSelectList.disabled=true;
-    octaveInput.disabled=true;
 }
-function showToast(status,header,body){
-    if(status) {
-        successToastBody.innerText=body;
-        successToastHeader.innerText=header
+function restrictConfigurations() {
+    instrumentSelectList.disabled = true;
+    octaveInput.disabled = true;
+}
+function showToast(status, header, body) {
+    if (status) {
+        successToastBody.innerText = body;
+        successToastHeader.innerText = header
     }
     else {
-        errorToastBody.innerText=body;
-        errorToastHeader.innerText=header
-    } 
-    const toast = (status)? bootstrap.Toast.getOrCreateInstance(successToastDiv):bootstrap.Toast.getOrCreateInstance(errorToastDiv)
+        errorToastBody.innerText = body;
+        errorToastHeader.innerText = header
+    }
+    const toast = (status) ? bootstrap.Toast.getOrCreateInstance(successToastDiv) : bootstrap.Toast.getOrCreateInstance(errorToastDiv)
     toast.show();
 }
-function toggleChatWindow(){
+function toggleChatWindow() {
     chatWindow.classList.toggle('d-none');
-    if(chatWindow.classList.contains("d-none"))
-    {
-        if(+notificationCount.innerText>0) 
+    if (chatWindow.classList.contains("d-none")) {
+        if (+notificationCount.innerText > 0)
             notificationCount.classList.remove("d-none")
-        else 
+        else
             notificationCount.classList.add("d-none")
     }
 }
