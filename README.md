@@ -1,5 +1,5 @@
-# Singleplayer-Multiplayer-Piano
-This is a singleplayer/multiplayer piano application that allows users to play the piano on their own or with others. The application is built with the following technologies:
+# Tuneup 🎶
+A singleplayer/multiplayer piano application that allow users to play the piano on their own or with others. The application is built with the following technologies:
 <ul>
   <li>Node.js</li>
   <li>Socket.io</li>
