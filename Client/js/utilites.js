@@ -144,12 +144,7 @@ function showHide(show, hide) {
     hide.classList.add("d-none");
 }
 function validateRoomInput() {
-    roomWarning.classList.add("d-none");
-    if (!roomId.value.trim().length) {
-        roomWarning.classList.remove("d-none");
-        return 0;
-    }
-    return 1;
+    return !roomId.value.trim().length
 }
 function copyRoomId() {
     navigator.clipboard.writeText(roomId.value.trim() || socket.id);

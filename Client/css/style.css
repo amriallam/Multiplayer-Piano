@@ -104,6 +104,10 @@ span {
   box-shadow: 1px 0px 15px -9px rgba(0, 0, 0, 1);
 }
 
+#multiplayerSection{
+  width: 30vw;
+}
+
 /* https://uiverse.io/aasisodiya/sour-horse-29 */
 
 /* The switch - the box around the slider */

@@ -165,6 +165,7 @@ let multiplayerFlag = false;
 // buttons event listners
 addEventListener("load", () => {
     singleplayer.addEventListener("click", () => {
+        Title.classList.add("d-none");
         socket.disconnect();
         loadingDiv.classList.add("opacity-0");
         showHide(pianoDisplay, Home)
@@ -176,6 +177,7 @@ addEventListener("load", () => {
         socket.on("connect", () => {
             loadingDiv.classList.add("opacity-0")
             showHide(multiplayerSection, Home)
+            Title.classList.add("d-none");
         });
         socket.on("connect_error", () => {
             loadingDiv.classList.add("opacity-0")
@@ -185,28 +187,27 @@ addEventListener("load", () => {
     })
     joinButton.addEventListener("click", () => {
         if (validateRoomInput()) {
-            roomIdWarning.classList.add("d-none");
             socket.emit("checkRoomExistance", roomId.value.trim());
         }
         else
-            roomIdWarning.classList.add("d-none");
+        showToast(0, "Invalid room input", "Please check your room id again")
     });
     homeButton.addEventListener("click", () => {
         if (socket.connected) socket.disconnect();
-        chatDiv.classList.add("d-none");
+        Title.classList.remove("d-none");
         resetPage();
         showHide(Home, pianoDisplay)
     });
     backButton.addEventListener("click", () => {
         if (socket.connected) socket.disconnect();
         roomId.value = "";
+        Title.classList.remove("d-none");
         showHide(Home, multiplayerSection);
     });
     createButton.addEventListener("click", () => {
-        sessionStorage.setItem("nickname", Nickname.value.trim())
         sessionStorage.setItem("roomId", socket.id)
         showHide(pianoDisplay, multiplayerSection)
-        chatDiv.classList.remove("d-none");
+        showToast(1, "Room created", "You've hosted room "+socket.id)
         roomIdDiv.innerHTML = `<div class="text-center"><span class="text-center">You hosted room: ${socket.id}</span><button onclick="copyRoomId()" class="mx-2 py-0 px-1 btn btn-primary shadow-none">Copy</button></div>`
         startPiano()
         multiplayerFlag = true;
@@ -217,15 +218,14 @@ addEventListener("load", () => {
 socket.on("RoomResult", (result) => {
     if (result) {
         sessionStorage.setItem("roomId", roomId.value.trim())
-        socket.emit("joinMe", roomId.value.trim(), sessionStorage.getItem("nickname"));
         startPiano();
         roomIdDiv.innerHTML = `<div class="text-center"><span class="text-center">You joined room: ${roomId.value.trim()}</span><button onclick="copyRoomId()" class="mx-2 py-0 px-1 btn btn-primary shadow-none">Copy</button></div>`
         multiplayerFlag = true;
-        chatDiv.classList.add("d-none");
+        showToast(1, "Connected successfully", "You've successfully connected to "+roomId.value.trim())
         restrictConfigurations();
         showHide(pianoDisplay, multiplayerSection);
     } else
-        roomIdWarning.classList.remove("d-none");
+        showToast(0, "Room not found", "Room doesn't exist. Please check room id again")
 });
 socket.on('connection-success', success => {
     alert('Connection');

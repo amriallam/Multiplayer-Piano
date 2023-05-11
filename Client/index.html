@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Piano</title>
+    <title>Tuneup</title>
     <script src="./js/main/audiosynth.js"></script>
     <script src="./js/main/socket.io.js"></script>
     <script src="./js/main/bootstrap.bundle.min.js"></script>
@@ -18,103 +18,91 @@
 </head>
 
 <body>
-    <div id="Home" class="d-flex gap-5 justify-content-center
+    <div class="d-flex flex-column align-items-center gap-4">
+        <div id="Title">
+            <span class="fw-bold fs-1">🎵 Tuneup 🎵</span>
+        </div>
+        <div>
+            <div id="Home" class="d-flex gap-5 justify-content-center
             align-items-center">
-        <div id="singleplayer" class="bg-primary flex-column d-flex justify-content-center align-items-center gap-2
+                <div id="singleplayer" class="bg-primary flex-column d-flex justify-content-center align-items-center gap-2
                 py-4 px-5 rounded-5">
-            <img src="./assets/singleplayer.png" width="128px" alt="Single
+                    <img src="./assets/singleplayer.png" width="128px" alt="Single
                     Player">
-            <p class="fs-2 text-light">Single Player</p>
-        </div>
-        <div id="multiplayer" class="bg-danger flex-column d-flex justify-content-center align-items-center gap-2
+                    <p class="fs-2 text-light">Single Player</p>
+                </div>
+                <div id="multiplayer" class="bg-danger flex-column d-flex justify-content-center align-items-center gap-2
                 py-4 px-5 rounded-5">
-            <img src="./assets/multiplayer.png" width="128px" alt="Multiplayer">
-            <p class="fs-2 text-light">Multiplayer</span>
-        </div>
-    </div>
-    <div id="multiplayerSection" class="container d-none d-flex flex-column gap-3">
-        <section class="d-flex align-items-center justify-content-center">
-            <div id="leftSection" class="col-6 d-flex flex-column align-items-end me-4 gap-2">
-                <div class="col-12 col-lg-6">
-                    <input type="text" class="form-control text-center" id="Nickname" placeholder="Nickname" />
+                    <img src="./assets/multiplayer.png" width="128px" alt="Multiplayer">
+                    <p class="fs-2 text-light">Multiplayer</span>
                 </div>
-                <button class="btn btn-warning col-12 col-lg-6 p-2 rounded-2" id="createButton">Create</button>
             </div>
-            <div id="rightSection" class="col-6 d-flex flex-column align-items-start ms-4 gap-2">
-                <div class="col-12 col-lg-6">
-                    <input type="text" class="form-control text-center" id="roomId" placeholder="Enter Room ID" />
+            <div id="multiplayerSection" class="d-none d-flex flex-column gap-3">
+                <button class="btn btn-success rounded-2" id="createButton">Create Room</button>
+                <hr>
+                <input type="text" class="form-control text-center" id="roomId" placeholder="Enter Room ID" />
+                <button class="btn btn-primary rounded-2" id="joinButton">Join</button>
+                <button class="btn btn-danger rounded-2" id="backButton">Back</button>
+            </div>
+            <div id="pianoDisplay" class="d-none">
+                <div id="returnHomeButton"><button id="homeButton"
+                        class="btn btn-primary px-5 text-light fs-4">←</button>
                 </div>
-                <p class="alert-light px-2 rounded-1 d-none" id="roomWarning">Enter a valid room id</p>
-                <p class="alert-light px-2 rounded-1 d-none" id="roomIdWarning">Room doesn't exist</p>
-                <button class="btn btn-primary col-12 col-lg-6 p-2 rounded-2" id="joinButton">Join</button>
+                <div id="roomIdDiv"></div>
+                <div id="controller" class="d-flex justify-content-center gap-3 mt-3">
+                    <span class="fw-bold fs-4">Notes</span>
+                    <label class="switch">your
+                        <input type="checkbox" checked onchange="toggleInfo(1)">
+                        <span class="slider"></span>
+                    </label>
+
+                    <span class="fw-bold fs-4">Keyboard Buttons</span>
+                    <label class="switch">
+                        <input type="checkbox" checked onchange="toggleInfo(0)">
+                        <span class="slider"></span>
+                    </label>
+
+                    <span class="fw-bold fs-4">Volume</span>
+                    <input type="range" min="0" max="1" value="1" step="0.1" onchange="volumeChange(value)"
+                        id="volumeRange">
+
+                    <span class="fw-bold fs-4">Instrument</span>
+                    <select class="fw-normal fs-6" id="instrumentSelectList" onchange="instrumentChange(value)">
+                        <option class="fw-normal fs-6" value="piano" selected>Piano</option>
+                        <option class="fw-normal fs-6" value="organ">organ</option>
+                        <option class="fw-normal fs-6" value="acoustic">Acoustic</option>
+                        <option class="fw-normal fs-6" value="edm">Edm</option>
+                    </select>
+
+                    <span class="fw-bold fs-4">Octave</span>
+                    <input class="fw-normal fs-6" type="number" min="1" max="6" value="3" onchange="octaveChange(value)"
+                        id="octaveInput">
+                </div>
+                <div class="mt-5" id="keyboardDiv"></div>
             </div>
-        </section>
-        <button class="btn btn-danger mx-auto col-4 rounded-2" id="backButton">Back</button>
-    </div>
-    <div id="pianoDisplay" class="d-none">
-        <div id="returnHomeButton"><button id="homeButton" class="btn btn-primary px-5 text-light fs-4">←</button>
-        </div>
-        <div id="roomIdDiv"></div>
-        <div id="controller" class="d-flex justify-content-center gap-3 mt-3">
-
-            <span class="fw-bold fs-4">Notes</span>
-            <label class="switch">
-                <input type="checkbox" checked onchange="toggleInfo(1)">
-                <span class="slider"></span>
-            </label>
-
-            <span class="fw-bold fs-4">Keyboard Buttons</span>
-            <label class="switch">
-                <input type="checkbox" checked onchange="toggleInfo(0)">
-                <span class="slider"></span>
-            </label>
-
-            <span class="fw-bold fs-4">Volume</span>
-            <input type="range" min="0" max="1" value="1" step="0.1" onchange="volumeChange(value)" id="volumeRange">
-
-            <span class="fw-bold fs-4">Instrument</span>
-            <select class="fw-normal fs-6" id="instrumentSelectList" onchange="instrumentChange(value)">
-                <option class="fw-normal fs-6" value="piano" selected>Piano</option>
-                <option class="fw-normal fs-6" value="organ">organ</option>
-                <option class="fw-normal fs-6" value="acoustic">Acoustic</option>
-                <option class="fw-normal fs-6" value="edm">Edm</option>
-            </select>
-
-            <span class="fw-bold fs-4">Octave</span>
-            <input class="fw-normal fs-6" type="number" min="1" max="6" value="3" onchange="octaveChange(value)"
-                id="octaveInput">
-        </div>
-        <div class="mt-5" id="keyboardDiv"></div>
-    </div>
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-        <div id="successToastDiv" class="toast bg-success-subtle" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-                <strong class="me-auto" id="successToastHeader"></strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                <div id="successToastDiv" class="toast bg-success-subtle" role="alert" aria-live="assertive"
+                    aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto" id="successToastHeader"></strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body" id="successToastBody"></div>
+                </div>
+                <div id="errorToastDiv" class="toast bg-danger-subtle" role="alert" aria-live="assertive"
+                    aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto" id="errorToastHeader"></strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body" id="errorToastBody"></div>
+                </div>
             </div>
-            <div class="toast-body" id="successToastBody"></div>
-        </div>
-        <div id="errorToastDiv" class="toast bg-danger-subtle" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-                <strong class="me-auto" id="errorToastHeader"></strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body" id="errorToastBody"></div>
+            <div id="loadingDiv" style="transition: all 0.4s;"
+                class="spinner-border position-fixed bottom-0 end-0 m-4 p-3 opacity-0" role="status"></div>
         </div>
     </div>
-    <div style="width: 20%;" id="chatDiv" class="d-none position-fixed bottom-0 end-0 px-3">
-        <div class="bg-primary rounded-top-2 p-2 text-light d-flex justify-content-center align-items-center gap-2"
-            onclick="toggleChatWindow()">
-            <span class="fs-5">Chat</span>
-            <div class="bg-danger rounded-5 d-none" id="notificationCount"
-                style="font-size:0.8rem; padding: 2px 4px 1px 3px;">
-                0</div>
-        </div>
-        <div id="chatWindow" class="d-none">
-        </div>
-    </div>
-    <div id="loadingDiv" style="transition: all 0.4s;"
-        class="spinner-border position-fixed bottom-0 end-0 m-4 p-3 opacity-0" role="status"></div>
+
 </body>
 
 </html>
