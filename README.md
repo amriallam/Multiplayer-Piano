@@ -27,7 +27,7 @@ Run the server with <br>
 npm run server
 ```
 
-<strong>Make sure you've changed server's ip in Client/js/config.js file</strong>
+<strong>Make sure you've changed server's ip in Client/js/config.js file</strong> <br>
 Open the client in your browser at http://localhost:3000.
 <h3>For Singleplayer</h3>
 Just hub in the client folder and open the <strong>Index.html</strong>
