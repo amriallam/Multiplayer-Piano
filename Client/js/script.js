@@ -164,6 +164,7 @@ let multiplayerFlag = false;
 
 // buttons event listners
 addEventListener("load", () => {
+    loadingScreen();
     singleplayer.addEventListener("click", () => {
         Title.classList.add("d-none");
         socket.disconnect();

@@ -185,3 +185,9 @@ function toggleChatWindow() {
             notificationCount.classList.add("d-none")
     }
 }
+function loadingScreen() {
+    setTimeout(() => {
+        loadingGif.classList.add("d-none");
+        mainScreenDiv.classList.remove("d-none")
+    }, 4900)
+}

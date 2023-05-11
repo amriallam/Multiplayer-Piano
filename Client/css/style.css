@@ -99,13 +99,16 @@ span {
   right: 4%;
 }
 
-#chatWindow {
-  height: 30vh;
-  box-shadow: 1px 0px 15px -9px rgba(0, 0, 0, 1);
+#multiplayerSection {
+  width: 30vw;
 }
 
-#multiplayerSection{
-  width: 30vw;
+#loadingGif {
+  background-image: url("../assets/loading.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 100vw;
+  height: 100vh;
 }
 
 /* https://uiverse.io/aasisodiya/sour-horse-29 */
