@@ -16,13 +16,17 @@ This is a singleplayer/multiplayer piano application that allows users to play t
 <h3>For Multiplayer</h3>
 Clone the repository to your local machine.
 Install the dependencies with <br>
+
 ```
 npm install
 ```
+
 Run the server with <br>
+
 ```
 npm run server
 ```
+
 <strong>Make sure you've changed server's ip in Client/js/config.js file</strong>
 Open the client in your browser at http://localhost:3000.
 <h3>For Singleplayer</h3>
