@@ -39,20 +39,16 @@ function playNote(keyCode, remoteNote = false) {
     }
     instrument.play(pressedkey[0], pressedOctave, 2);
     pianoEvent(keyCode, remoteNote)
-    if (multiplayerFlag && !remoteNote) {
+    if (multiplayerFlag && !remoteNote)
         socket.emit("keyDownRemote", keyCode, sessionStorage.getItem("roomId"))
-        console.log("Lobby : " + sessionStorage.getItem("roomId") + " Keycode Pressed")
-    }
 }
 function releaseNote(keyCode, remoteNote = false) {
     if (!keyboardNotes.hasOwnProperty(keyCode)) return
     let pressedKeyDiv = document.getElementById(keyboardNotes[keyCode].replace(",", ""))
     if (!pressedKeyDiv.classList.contains("pressed")) return
     pianoEvent(keyCode, remoteNote)
-    if (multiplayerFlag && !remoteNote) {
+    if (multiplayerFlag && !remoteNote)
         socket.emit("keyUpRemote", keyCode, sessionStorage.getItem("roomId"))
-        console.log("Lobby : " + sessionStorage.getItem("roomId") + " Keycode Pressed")
-    }
 }
 function drawKeys() {
     let iWhite = 0;
