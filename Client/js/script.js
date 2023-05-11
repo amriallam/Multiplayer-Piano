@@ -186,11 +186,10 @@ addEventListener("load", () => {
         });
     })
     joinButton.addEventListener("click", () => {
-        if (validateRoomInput()) {
+        if (validateRoomInput())
             socket.emit("checkRoomExistance", roomId.value.trim());
-        }
         else
-        showToast(0, "Invalid room input", "Please check your room id again")
+            showToast(0, "Invalid room input", "Please check your room id again")
     });
     homeButton.addEventListener("click", () => {
         if (socket.connected) socket.disconnect();
@@ -207,7 +206,7 @@ addEventListener("load", () => {
     createButton.addEventListener("click", () => {
         sessionStorage.setItem("roomId", socket.id)
         showHide(pianoDisplay, multiplayerSection)
-        showToast(1, "Room created", "You've hosted room "+socket.id)
+        showToast(1, "Room created", "You've hosted room " + socket.id)
         roomIdDiv.innerHTML = `<div class="text-center"><span class="text-center">You hosted room: ${socket.id}</span><button onclick="copyRoomId()" class="mx-2 py-0 px-1 btn btn-primary shadow-none">Copy</button></div>`
         startPiano()
         multiplayerFlag = true;
@@ -218,18 +217,15 @@ addEventListener("load", () => {
 socket.on("RoomResult", (result) => {
     if (result) {
         sessionStorage.setItem("roomId", roomId.value.trim())
+        multiplayerFlag = true;
+        showToast(1, "Connected successfully", "You've successfully connected to " + roomId.value.trim())
         startPiano();
         roomIdDiv.innerHTML = `<div class="text-center"><span class="text-center">You joined room: ${roomId.value.trim()}</span><button onclick="copyRoomId()" class="mx-2 py-0 px-1 btn btn-primary shadow-none">Copy</button></div>`
-        multiplayerFlag = true;
-        showToast(1, "Connected successfully", "You've successfully connected to "+roomId.value.trim())
         restrictConfigurations();
         showHide(pianoDisplay, multiplayerSection);
     } else
         showToast(0, "Room not found", "Room doesn't exist. Please check room id again")
 });
-socket.on('connection-success', success => {
-    alert('Connection');
-})
 socket.on("keyDownTrigger", (keyCode) => playNote(keyCode, true))
 socket.on("keyUpTrigger", (keyCode) => releaseNote(keyCode, true))
 socket.on("octaveChangeTrigger", (newValue) => {

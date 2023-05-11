@@ -39,14 +39,20 @@ function playNote(keyCode, remoteNote = false) {
     }
     instrument.play(pressedkey[0], pressedOctave, 2);
     pianoEvent(keyCode, remoteNote)
-    if (multiplayerFlag && !remoteNote) socket.emit("keyDownRemote", keyCode, sessionStorage.getItem("roomId"))
+    if (multiplayerFlag && !remoteNote) {
+        socket.emit("keyDownRemote", keyCode, sessionStorage.getItem("roomId"))
+        console.log("Lobby : " + sessionStorage.getItem("roomId") + " Keycode Pressed")
+    }
 }
 function releaseNote(keyCode, remoteNote = false) {
     if (!keyboardNotes.hasOwnProperty(keyCode)) return
     let pressedKeyDiv = document.getElementById(keyboardNotes[keyCode].replace(",", ""))
     if (!pressedKeyDiv.classList.contains("pressed")) return
     pianoEvent(keyCode, remoteNote)
-    if (multiplayerFlag && !remoteNote) socket.emit("keyUpRemote", keyCode, sessionStorage.getItem("roomId"))
+    if (multiplayerFlag && !remoteNote) {
+        socket.emit("keyUpRemote", keyCode, sessionStorage.getItem("roomId"))
+        console.log("Lobby : " + sessionStorage.getItem("roomId") + " Keycode Pressed")
+    }
 }
 function drawKeys() {
     let iWhite = 0;
@@ -144,7 +150,7 @@ function showHide(show, hide) {
     hide.classList.add("d-none");
 }
 function validateRoomInput() {
-    return !roomId.value.trim().length
+    return roomId.value.trim().length > 0 ? true : false
 }
 function copyRoomId() {
     navigator.clipboard.writeText(roomId.value.trim() || socket.id);
