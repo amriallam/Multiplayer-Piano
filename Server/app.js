@@ -4,7 +4,9 @@ io.on("connection", (socket) => {
   console.log('\x1b[36m%s', `${socket.id} Connected`);
   socket.on("checkRoomExistance", (lobbyId) => {
     if (io.sockets.adapter.rooms.get(lobbyId)) {
-      socket.emit("RoomResult", 1);;
+      socket.join(lobbyId);
+      console.log('\x1b[33m%s', `${socket.id} Joined ${lobbyId}`);
+      socket.emit("RoomResult", 1);
     } else {
       socket.emit("RoomResult", 0);
     }
@@ -13,16 +15,10 @@ io.on("connection", (socket) => {
     socket.join(socket.id);
     console.log('\x1b[35m%s', `${socket.id} Hosted his own room`)
   })
-  socket.on("joinMe", (lobbyId, userName) => {
-    io.to(lobbyId).emit("userJoined", userName)
-    socket.join(lobbyId);
-    console.log('\x1b[33m%s', `${socket.id} Joined ${lobbyId}`);
-  });
   socket.on('disconnect', () => {
     console.log('\x1b[31m%s', `${socket.id} Disconnected`);
 
   });
-  socket.on('send-message', (massage, sender, lobbyId) => io.to(lobbyId).emit("receive-message", massage, sender));
   socket.on('leaveLobby', (lobbyId, userId) => {
     socket.leave(lobbyId);
     io.to(lobbyId).emit("leftLobby", userId);
